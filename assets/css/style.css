@@ -1,0 +1,1295 @@
+/* style.css - Filipino home cooking look
+   Colors come from the kitchen: banana leaf green, turmeric yellow, sili red, clay (palayok) brown.
+   The woven strip is inspired by the banig (handwoven mat) and is used in only a few places:
+   the top of the page, the bottom of the page, and the top edge of recipe cards and forms.
+
+   Mobile first: base styles are for phones, the @media blocks at the bottom add the desktop layout.
+
+   Sections
+   1. Colors, fonts and the woven pattern
+   2. Header and menu
+   3. Messages
+   4. Buttons
+   5. Forms
+   6. Recipe list (cards)
+   7. Recipe page
+   8. Comments
+   9. Larger screens
+*/
+
+/* ---------- 1. Colors, fonts and the woven pattern ---------- */
+
+:root {
+    --bg: #f7eed8;          /* woven bamboo / rice paper */
+    --paper: #fffbf0;       /* recipe card paper */
+    --line: #e2d2ac;
+    --ink: #3a2a1d;         /* coffee brown */
+    --muted: #7a6753;
+
+    --leaf: #24502f;        /* banana leaf */
+    --leaf-dark: #173a22;
+    --leaf-tint: #edf1e0;
+    --turmeric: #e8a317;
+    --turmeric-light: #f2b72b;
+    --turmeric-tint: #fbe9b7;
+    --sili: #b8321f;        /* chili red */
+    --sili-tint: #fbe6e1;
+    --clay: #a9502f;        /* palayok (clay pot) */
+
+    /* The woven strip: a row of yellow diamonds on red, with a cream center.
+       It is a tiny SVG drawn right here, so there is no image file to load.
+       (%23 is how a # is written inside a CSS url.) */
+    --weave: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='12' viewBox='0 0 24 12'><rect width='24' height='12' fill='%23b8321f'/><path d='M12 0L24 6L12 12L0 6Z' fill='%23e8a317'/><path d='M12 3L18 6L12 9L6 6Z' fill='%23fffbf0'/></svg>");
+
+    --font-body: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-heading: Georgia, "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* A woven strip at the very bottom of every page (it replaces the footer) */
+body::after {
+    content: "";
+    display: block;
+    flex: none;
+    height: 12px;
+    background: var(--weave) repeat-x 0 0 / 24px 12px;
+}
+
+h1, h2, h3 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--leaf-dark);
+}
+
+h1 { font-size: 1.6rem; margin-bottom: 18px; }
+h2 { font-size: 1.25rem; }
+
+p { margin: 0 0 8px; }
+
+a { color: var(--leaf); }
+a:hover { color: var(--sili); }
+
+:focus-visible {
+    outline: 2px solid var(--leaf);
+    outline-offset: 2px;
+}
+
+.container {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+main {
+    flex: 1;
+    padding-top: 28px;
+    padding-bottom: 48px;
+}
+
+.meta {
+    color: var(--muted);
+    font-size: 0.875rem;
+    margin: 0 0 4px;
+}
+
+.hint {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 0.8125rem;
+}
+
+/* The site has no name or logo. These are hidden here and removed by app.js. */
+.brand,
+.site-footer { display: none; }
+
+/* The woven strip on top of cards, forms and the recipe page */
+.card::before,
+.recipe-detail::before,
+.form-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: var(--weave) repeat-x 0 0 / 20px 10px;
+}
+
+.card,
+.recipe-detail,
+.form-box {
+    position: relative;
+    overflow: hidden;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: 0 3px 0 var(--line);
+}
+
+/* ---------- 2. Header and menu ---------- */
+
+.site-header {
+    background: var(--leaf);
+}
+
+/* Woven strip under the menu */
+.site-header::after {
+    content: "";
+    display: block;
+    height: 12px;
+    background: var(--weave) repeat-x 0 0 / 24px 12px;
+}
+
+.header-inner {
+    display: flex;
+    align-items: stretch;
+    min-height: 54px;
+}
+
+.main-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0 20px;
+    width: 100%;
+}
+
+/* Guests only see two links, so keep them on the right */
+.main-nav:not(:has(.nav-user)) { justify-content: flex-end; }
+
+.main-nav a,
+.nav-button {
+    display: flex;
+    align-items: center;
+    min-height: 54px;
+    color: #f6edd3;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    transition: color 0.12s;
+}
+
+.main-nav a:hover,
+.nav-button:hover { color: var(--turmeric-light); }
+
+/* The page you are on (set by app.js) gets a yellow underline */
+.main-nav a[aria-current="page"] {
+    color: #fff;
+    font-weight: 600;
+    box-shadow: inset 0 -3px 0 var(--turmeric);
+}
+
+.main-nav :focus-visible {
+    outline-color: var(--turmeric-light);
+}
+
+.nav-user {
+    display: none;     /* shown from tablet width up */
+    align-items: center;
+    color: var(--turmeric-light);
+    font-size: 0.9375rem;
+}
+
+.logout-form {
+    display: flex;
+    margin: 0;
+}
+
+.nav-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* ---------- 3. Messages ---------- */
+
+.flash {
+    padding: 11px 16px;
+    margin-bottom: 20px;
+    border: 1px solid;
+    border-radius: 10px;
+    font-size: 0.9375rem;
+}
+
+.flash-success { background: var(--leaf-tint); border-color: #c5d3a8; color: var(--leaf-dark); }
+.flash-error   { background: var(--sili-tint); border-color: #eec0b7; color: #8f2514; }
+
+/* Empty lists and error pages */
+.empty-state,
+.notice-page {
+    padding: 32px 20px;
+    text-align: center;
+    background: var(--paper);
+    border: 2px dashed var(--line);
+    border-radius: 14px;
+}
+
+.notice-page h1 { margin-bottom: 8px; }
+.empty-state p,
+.notice-page p { color: var(--muted); }
+.empty-state .btn,
+.notice-page .btn { margin-top: 8px; }
+
+/* ---------- 4. Buttons ---------- */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 18px;
+    background: var(--leaf);
+    color: #fff;
+    border: 2px solid var(--leaf);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.btn:hover {
+    background: var(--leaf-dark);
+    border-color: var(--leaf-dark);
+    color: #fff;
+}
+
+.btn-outline {
+    background: var(--paper);
+    color: var(--leaf-dark);
+    border-color: var(--leaf);
+}
+
+.btn-outline:hover {
+    background: var(--leaf-tint);
+    border-color: var(--leaf);
+    color: var(--leaf-dark);
+}
+
+.btn-danger {
+    background: var(--paper);
+    color: var(--sili);
+    border-color: var(--sili);
+}
+
+.btn-danger:hover {
+    background: var(--sili);
+    border-color: var(--sili);
+    color: #fff;
+}
+
+.btn-small {
+    min-height: 34px;
+    padding: 0 14px;
+    font-size: 0.8125rem;
+}
+
+/* Save / Saved heart button */
+.btn-fav {
+    background: var(--paper);
+    color: var(--sili);
+    border-color: var(--sili);
+}
+
+.btn-fav:hover {
+    background: var(--sili-tint);
+    border-color: var(--sili);
+    color: var(--sili);
+}
+
+.btn-fav.is-saved {
+    background: var(--sili);
+    color: #fff;
+}
+
+.btn:disabled { opacity: 0.6; cursor: wait; }
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0;
+}
+
+.actions form { margin: 0; }
+
+/* ---------- 5. Forms ---------- */
+
+/* Sign up, log in, share a recipe, edit comment: paper cards with the woven top edge */
+.form-box {
+    max-width: 420px;
+    margin: 12px auto 0;
+    padding: 38px 20px 24px;
+}
+
+.form-box h1 { margin-bottom: 4px; }
+.intro { margin-bottom: 20px; color: var(--muted); }
+.switch { margin: 20px 0 0; text-align: center; font-size: 0.875rem; color: var(--muted); }
+
+.form-box.form-wide {
+    max-width: 720px;
+    margin: 12px auto 0;
+}
+
+.field { margin-bottom: 14px; }
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--leaf-dark);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+select,
+textarea {
+    width: 100%;
+    min-height: 42px;
+    padding: 8px 12px;
+    background: #fff;
+    color: var(--ink);
+    border: 1.5px solid #d3c19a;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.4;
+    transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+textarea { resize: vertical; }
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--leaf);
+    box-shadow: 0 0 0 3px #d8e6c4;
+}
+
+.invalid { border-color: var(--sili) !important; }
+.invalid:focus { box-shadow: 0 0 0 3px var(--sili-tint); }
+
+.error {
+    display: block;
+    min-height: 1.25rem;       /* reserves the space so the layout does not jump */
+    margin-top: 4px;
+    color: var(--sili);
+    font-size: 0.8125rem;
+}
+
+/* Ingredient rows: text box + remove button */
+.ingredient-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.ingredient-row input { flex: 1; }
+
+.btn-remove {
+    flex: none;
+    width: 42px;
+    min-height: 42px;
+    background: #fff;
+    color: var(--muted);
+    border: 1.5px solid #d3c19a;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: color 0.12s, border-color 0.12s;
+}
+
+.btn-remove:hover {
+    color: var(--sili);
+    border-color: var(--sili);
+}
+
+#add-ingredient { margin-top: 4px; }
+
+/* ---------- 6. Recipe list (cards) ---------- */
+
+.filter-bar {
+    display: flex;
+    flex-direction: column;     /* stacked on phones */
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.filter-bar .btn { width: 100%; }
+
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+}
+
+/* One recipe card. Inside it, the order is set with "order" so the layout does not
+   depend on the HTML order. The p:nth-of-type numbers match includes/recipe_card.php:
+   1 = author and date, 2 = description, 3 = time and servings. */
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 28px 18px 18px;
+}
+
+.card > .badge              { order: 1; }
+.card > .card-title         { order: 2; }
+.card > p:nth-of-type(2)    { order: 3; }   /* description */
+.card > p:nth-of-type(1)    { order: 4; }   /* author, date */
+.card > p:nth-of-type(3)    { order: 5; }   /* time, servings */
+.card > .btn-fav            { order: 6; margin-top: 14px; }
+
+.card p { margin-bottom: 4px; }
+
+.card-title {
+    margin: 8px 0 6px;
+    font-size: 1.25rem;
+}
+
+.card-title a {
+    color: var(--leaf-dark);
+    text-decoration: none;
+}
+
+.card-title a:hover {
+    color: var(--sili);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Description: at most three lines, so cards in a row stay the same height */
+.card > p:nth-of-type(2) {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+/* Time and servings sit under a dashed line, like the bottom of a recipe card */
+.card > p:nth-of-type(3) {
+    width: 100%;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 2px dashed var(--line);
+    color: var(--clay);
+    font-weight: 600;
+}
+
+/* Category label */
+.badge {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 2px 12px;
+    background: var(--turmeric-tint);
+    color: #6b4a0a;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+/* ---------- 7. Recipe page ---------- */
+
+.recipe-detail {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 34px 18px 22px;
+}
+
+.recipe-detail > .badge { justify-self: start; }
+
+.recipe-detail h1 {
+    margin: 10px 0 6px;
+    font-size: 1.9rem;
+}
+
+.lead {
+    max-width: 62ch;
+    margin: 8px 0 0;
+    font-size: 1.0625rem;
+}
+
+/* Cooking time and servings as two small dashed tags */
+.facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.9375rem;
+}
+
+.facts li {
+    padding: 3px 14px;
+    color: var(--clay);
+    border: 2px dashed var(--clay);
+    border-radius: 999px;
+}
+
+.recipe-detail > .actions { margin: 18px 0 6px; }
+
+.recipe-detail h2 { margin: 26px 0 10px; }
+
+/* Ingredients: a leaf-green tinted list with small yellow dots */
+.ingredient-list {
+    margin: 0;
+    padding: 4px 16px;
+    list-style: none;
+    background: var(--leaf-tint);
+    border-radius: 12px;
+}
+
+.ingredient-list li {
+    position: relative;
+    padding: 9px 0 9px 20px;
+    border-bottom: 1px dashed #c5d3a8;
+}
+
+.ingredient-list li:last-child { border-bottom: none; }
+
+.ingredient-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1.05em;
+    width: 8px;
+    height: 8px;
+    background: var(--turmeric);
+    border-radius: 50%;
+}
+
+/* Steps are a real sequence, so they get numbers */
+.step-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+}
+
+.step-list li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    align-items: start;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--line);
+    counter-increment: step;
+}
+
+.step-list li:last-child { border-bottom: none; }
+
+.step-list li::before {
+    content: counter(step);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--clay);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+/* ---------- 8. Comments ---------- */
+
+.comments {
+    max-width: 720px;
+    margin: 40px auto 0;
+}
+
+.comment-form {
+    margin: 14px 0 22px;
+}
+
+.comment {
+    margin-bottom: 10px;
+    padding: 12px 16px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+}
+
+.comment p { margin-bottom: 4px; }
+.comment .meta strong { color: var(--leaf); }
+.comment .actions { margin: 8px 0 0; }
+
+/* ---------- 9. Larger screens ---------- */
+
+@media (min-width: 700px) {
+    .container { padding: 0 24px; }
+    main { padding-top: 40px; }
+
+    h1 { font-size: 1.9rem; }
+
+    .main-nav { gap: 0 28px; }
+    .nav-user { display: flex; margin-left: auto; }
+
+    .form-box { padding: 42px 32px 30px; }
+
+    .filter-bar { flex-direction: row; }
+    .filter-bar input[type="search"] { flex: 1; }
+    .filter-bar select { width: 230px; }
+    .filter-bar .btn { width: auto; }
+
+    .card-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .field-row {
+        display: flex;
+        gap: 16px;
+    }
+    .field-row .field { flex: 1; }
+}
+
+@media (min-width: 860px) {
+    /* Recipe page: ingredients in a narrow column, steps beside them.
+       Rows 1-6 hold the title block, rows 7-8 hold the two headings and two lists. */
+    .recipe-detail {
+        grid-template-columns: 280px 1fr;
+        column-gap: 40px;
+        padding: 42px 36px 32px;
+    }
+
+    .recipe-detail > * { grid-column: 1 / -1; }
+
+    .recipe-detail > h2:nth-of-type(1)    { grid-column: 1; grid-row: 7; }
+    .recipe-detail > .ingredient-list     { grid-column: 1; grid-row: 8; align-self: start; }
+    .recipe-detail > h2:nth-of-type(2)    { grid-column: 2; grid-row: 7; }
+    .recipe-detail > .step-list           { grid-column: 2; grid-row: 8; align-self: start; }
+
+    .recipe-detail > .actions { margin-bottom: 0; }
+}
+
+@media (min-width: 980px) {
+    .card-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+}
+
+/* ==========================================================
+   UI REDESIGN OVERRIDES
+   A quieter, more editorial recipe-site design.
+   Existing class names and functionality are preserved.
+   ========================================================== */
+
+:root {
+    --bg: #f8f7f2;
+    --paper: #ffffff;
+    --line: #e4e5dc;
+    --ink: #242a22;
+    --muted: #697267;
+
+    --leaf: #315b3b;
+    --leaf-dark: #23452c;
+    --leaf-tint: #eef3ec;
+    --turmeric: #d9a52e;
+    --turmeric-light: #edc65d;
+    --turmeric-tint: #f8f0d9;
+    --sili: #a43d30;
+    --sili-tint: #f8ebe8;
+    --clay: #87543d;
+
+    --font-body: Inter, "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+    --font-heading: Georgia, "Times New Roman", serif;
+}
+
+body {
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.65;
+}
+
+body::after {
+    height: 4px;
+    background: var(--leaf);
+}
+
+h1, h2, h3 {
+    color: var(--ink);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: clamp(1.75rem, 3vw, 2.35rem);
+    margin-bottom: 16px;
+}
+
+h2 {
+    font-size: 1.35rem;
+    letter-spacing: -0.015em;
+}
+
+h3 {
+    font-size: 1.1rem;
+}
+
+p { margin-bottom: 12px; }
+
+a {
+    color: var(--leaf);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+}
+
+a:hover { color: var(--leaf-dark); }
+
+:focus-visible {
+    outline: 3px solid var(--turmeric);
+    outline-offset: 3px;
+}
+
+.container {
+    max-width: 1120px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+main {
+    padding-top: 32px;
+    padding-bottom: 64px;
+}
+
+.meta {
+    color: var(--muted);
+    font-size: 0.84rem;
+}
+
+.hint {
+    color: var(--muted);
+    font-size: 0.84rem;
+}
+
+/* Header: simple, solid color with a restrained bottom rule */
+.site-header {
+    background: var(--leaf-dark);
+}
+
+.site-header::after {
+    height: 3px;
+    background: var(--turmeric);
+}
+
+.header-inner {
+    min-height: 64px;
+    align-items: center;
+}
+
+.main-nav {
+    gap: 0 28px;
+}
+
+.main-nav a,
+.nav-button {
+    min-height: 64px;
+    color: #f7f8f3;
+    font-size: 0.93rem;
+    font-weight: 500;
+}
+
+.main-nav a:hover,
+.nav-button:hover {
+    color: var(--turmeric-light);
+}
+
+.main-nav a[aria-current="page"] {
+    color: #fff;
+    box-shadow: inset 0 -2px 0 var(--turmeric-light);
+}
+
+.nav-user {
+    color: #e9d79f;
+}
+
+.main-nav :focus-visible {
+    outline-color: var(--turmeric-light);
+}
+
+/* Messages and empty states */
+.flash {
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    border-radius: 8px;
+}
+
+.flash-success {
+    background: var(--leaf-tint);
+    border-color: #cbd8c8;
+    color: var(--leaf-dark);
+}
+
+.flash-error {
+    background: var(--sili-tint);
+    border-color: #e8c7c1;
+    color: #872e23;
+}
+
+.empty-state,
+.notice-page {
+    padding: 40px 24px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.empty-state p,
+.notice-page p { color: var(--muted); }
+
+/* Remove the repeated woven trim and heavy card shadows */
+.card::before,
+.recipe-detail::before,
+.form-box::before {
+    display: none;
+}
+
+.card,
+.recipe-detail,
+.form-box {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: none;
+}
+
+/* Buttons: consistent sizing and restrained interaction */
+.btn {
+    min-height: 42px;
+    padding: 0 17px;
+    background: var(--leaf);
+    border: 1px solid var(--leaf);
+    border-radius: 7px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover {
+    background: var(--leaf-dark);
+    border-color: var(--leaf-dark);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--leaf-dark);
+    border-color: #aab8a8;
+}
+
+.btn-outline:hover {
+    background: var(--leaf-tint);
+    border-color: var(--leaf);
+    color: var(--leaf-dark);
+}
+
+.btn-danger {
+    background: transparent;
+    color: var(--sili);
+    border-color: #d7aaa3;
+}
+
+.btn-danger:hover {
+    background: var(--sili);
+    border-color: var(--sili);
+}
+
+.btn-small {
+    min-height: 34px;
+    padding: 0 12px;
+}
+
+.btn-fav {
+    background: transparent;
+    color: var(--sili);
+    border-color: #dfc1bc;
+}
+
+.btn-fav:hover {
+    background: var(--sili-tint);
+    color: var(--sili);
+    border-color: #d5a39a;
+}
+
+.btn-fav.is-saved {
+    background: var(--sili);
+    border-color: var(--sili);
+    color: #fff;
+}
+
+.actions {
+    gap: 10px;
+    margin: 18px 0;
+}
+
+/* Forms: clearer fields and less ornamental framing */
+.form-box {
+    max-width: 460px;
+    margin: 20px auto 0;
+    padding: 28px;
+}
+
+.form-box h1 { margin-bottom: 8px; }
+
+.intro {
+    margin-bottom: 24px;
+    color: var(--muted);
+}
+
+.switch {
+    margin-top: 22px;
+    color: var(--muted);
+}
+
+.form-box.form-wide {
+    max-width: 780px;
+    margin-top: 20px;
+}
+
+.field { margin-bottom: 18px; }
+
+label {
+    margin-bottom: 7px;
+    color: var(--ink);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+select,
+textarea {
+    min-height: 44px;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1px solid #cfd4ca;
+    border-radius: 7px;
+    color: var(--ink);
+    font-size: 0.96rem;
+}
+
+textarea { min-height: 120px; }
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--leaf);
+    box-shadow: 0 0 0 3px rgba(49, 91, 59, 0.12);
+}
+
+.invalid { border-color: var(--sili) !important; }
+
+.invalid:focus {
+    box-shadow: 0 0 0 3px rgba(164, 61, 48, 0.12);
+}
+
+.error {
+    color: var(--sili);
+    font-size: 0.84rem;
+}
+
+.ingredient-row { gap: 10px; }
+
+.btn-remove {
+    border: 1px solid #cfd4ca;
+    border-radius: 7px;
+}
+
+.btn-remove:hover {
+    color: var(--sili);
+    border-color: var(--sili);
+}
+
+/* Recipe index: simple editorial grid rather than decorative cards */
+.filter-bar {
+    gap: 10px;
+    margin-bottom: 26px;
+}
+
+.card-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.card {
+    padding: 22px;
+    border-radius: 10px;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.card:hover {
+    border-color: #c7d0c2;
+}
+
+.card-title {
+    margin: 10px 0 8px;
+    font-size: 1.3rem;
+    line-height: 1.25;
+}
+
+.card-title a {
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.card-title a:hover {
+    color: var(--leaf);
+    text-decoration: underline;
+}
+
+.card > p:nth-of-type(2) {
+    color: #4f584d;
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+
+.card > p:nth-of-type(3) {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.badge {
+    padding: 3px 9px;
+    background: var(--leaf-tint);
+    color: var(--leaf-dark);
+    border-radius: 5px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* Recipe detail: distinct title, facts, ingredients and instructions */
+.recipe-detail {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 28px 22px;
+    border-radius: 12px;
+}
+
+.recipe-detail h1 {
+    margin: 12px 0 8px;
+    font-size: clamp(1.9rem, 3.5vw, 2.65rem);
+    max-width: 22ch;
+}
+
+.lead {
+    max-width: 66ch;
+    margin-top: 8px;
+    color: #4f584d;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.facts {
+    gap: 10px 18px;
+    margin-top: 18px;
+    color: var(--muted);
+}
+
+.facts li {
+    padding: 0;
+    color: var(--muted);
+    border: 0;
+    border-radius: 0;
+    font-size: 0.92rem;
+}
+
+.recipe-detail > .actions { margin: 20px 0 8px; }
+
+.recipe-detail h2 {
+    margin: 30px 0 12px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid var(--line);
+    font-size: 1.25rem;
+}
+
+.ingredient-list {
+    padding: 4px 16px;
+    background: #f5f7f2;
+    border: 1px solid #e4e9df;
+    border-radius: 8px;
+}
+
+.ingredient-list li {
+    padding: 10px 0 10px 20px;
+    border-bottom: 1px solid #e2e8dd;
+}
+
+.ingredient-list li::before {
+    width: 6px;
+    height: 6px;
+    top: 1.35em;
+    background: var(--leaf);
+}
+
+.step-list li {
+    grid-template-columns: 2.25rem 1fr;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    line-height: 1.7;
+}
+
+.step-list li::before {
+    width: 27px;
+    height: 27px;
+    background: var(--leaf);
+    border-radius: 6px;
+    font-size: 0.82rem;
+}
+
+/* Comments: separate entries with subtle rules */
+.comments {
+    max-width: 780px;
+    margin: 44px auto 0;
+}
+
+.comments > h2 { margin-bottom: 12px; }
+
+.comment-form { margin: 18px 0 28px; }
+
+.comment {
+    margin-bottom: 0;
+    padding: 18px 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+}
+
+.comment .meta strong { color: var(--leaf); }
+.comment .actions { margin-top: 10px; }
+
+/* Responsive refinements */
+@media (min-width: 700px) {
+    .container {
+        padding-left: 28px;
+        padding-right: 28px;
+    }
+
+    main {
+        padding-top: 44px;
+        padding-bottom: 72px;
+    }
+
+    .main-nav { gap: 0 30px; }
+
+    .form-box { padding: 34px; }
+
+    .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+}
+
+@media (min-width: 860px) {
+    .recipe-detail {
+        grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1.5fr);
+        column-gap: 44px;
+        padding: 38px;
+    }
+
+    .recipe-detail > * { grid-column: 1 / -1; }
+
+    .recipe-detail > h2:nth-of-type(1) {
+        grid-column: 1;
+        grid-row: 7;
+    }
+
+    .recipe-detail > .ingredient-list {
+        grid-column: 1;
+        grid-row: 8;
+        align-self: start;
+    }
+
+    .recipe-detail > h2:nth-of-type(2) {
+        grid-column: 2;
+        grid-row: 7;
+    }
+
+    .recipe-detail > .step-list {
+        grid-column: 2;
+        grid-row: 8;
+        align-self: start;
+    }
+}
+
+@media (min-width: 980px) {
+    .card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    main {
+        padding-top: 24px;
+        padding-bottom: 44px;
+    }
+
+    .form-box {
+        padding: 24px 18px;
+    }
+
+    .card {
+        padding: 20px 16px;
+    }
+
+    .recipe-detail {
+        padding: 24px 16px;
+    }
+
+    .actions { gap: 8px; }
+
+    .btn { padding-left: 14px; padding-right: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+    }
+}
